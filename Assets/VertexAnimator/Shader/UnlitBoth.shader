@@ -1,6 +1,7 @@
 ﻿Shader "Custom/UnlitBoth" {
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
+		_Color ("Main Color", Color) = (0.5, 0.5, 0.5 , 1)
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -12,6 +13,7 @@
 			#pragma fragment frag
 
 			sampler2D _MainTex;
+			float4 _Color;
 
 			struct Input {
 				float4 vertex : POSITION;
@@ -25,7 +27,7 @@
 				return OUT;
 			}
 			float4 frag(Input IN) : COLOR {
-				return tex2D(_MainTex, IN.uv);
+				return tex2D(_MainTex, IN.uv) * _Color;
 			}
 			ENDCG
 		}
