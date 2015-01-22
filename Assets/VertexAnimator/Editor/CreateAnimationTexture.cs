@@ -93,7 +93,7 @@ namespace VertexAnimater {
 			var offset = new Vector4(minX, minY, minZ, 1f);
 
 			mesh.vertices = new Vector3[mesh.vertexCount];
-			mesh.bounds = skinnedMesh.localBounds;
+			mesh.bounds = new Bounds((Vector3)(0.5f * scale + offset), (Vector3)scale);
 
 			var texWidth = LargerInPow2(mesh.vertexCount);
 			var texHeight = LargerInPow2(verticesList.Count * 2);
