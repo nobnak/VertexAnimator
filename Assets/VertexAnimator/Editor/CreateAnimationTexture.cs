@@ -19,6 +19,9 @@ namespace VertexAnimater {
 		public const string SHADER_ANIM_END = "_AnimEnd";
 		public const string SHADER_FPS = "_FPS";
 
+		public const string DIR_ASSETS = "Assets";
+		public const string DIR_ROOT = "AnimationTex";
+
 		[MenuItem("Custom/Create/VertexAnimation")]
 		public static void CreateMaterial() {
 			GameObject selection = Selection.activeGameObject;
@@ -128,15 +131,16 @@ namespace VertexAnimater {
 			}
 			tex2d.Apply();
 
-			AssetDatabase.CreateFolder("Assets", "AnimationTex_" + selection.name);
+			
+			var folderPath = DIR_ASSETS + "/" + DIR_ROOT;
+			if (!Directory.Exists(folderPath))
+				AssetDatabase.CreateFolder(DIR_ASSETS, DIR_ROOT);
+			var guid = AssetDatabase.CreateFolder(folderPath, selection.name);
+			folderPath = AssetDatabase.GUIDToAssetPath(guid);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
-
 			yield return 0;
 
-			string folderPath = "Assets/" + "AnimationTex_" + selection.name;
-
-			//AssetDatabase.CreateAsset(tex2d, folderPath + "/" + selection.name + "Tex.asset");
 			var pngPath = folderPath + "/" + selection.name + ".png";
 			File.WriteAllBytes(pngPath, tex2d.EncodeToPNG());
 			AssetDatabase.ImportAsset(pngPath, ImportAssetOptions.ForceUpdate);
@@ -155,8 +159,7 @@ namespace VertexAnimater {
 
 			Material mat = new Material(Shader.Find("VertexAnim/oneshot"));
 			mat.mainTexture = skinnedMesh.sharedMaterial.mainTexture;
-			//mat.SetTexture (SHADER_ANIM_TEX, tex2d);
-			mat.SetTexture("_AnimTex", (Texture2D) AssetDatabase.LoadAssetAtPath(pngPath, typeof(Texture2D)));
+			mat.SetTexture (SHADER_ANIM_TEX, (Texture2D)AssetDatabase.LoadAssetAtPath (pngPath, typeof(Texture2D)));
 			mat.SetVector (SHADER_SCALE, scale);
 			mat.SetVector (SHADER_OFFSET, offset);
 			mat.SetVector (SHADER_ANIM_END, new Vector4 (state.length, verticesList.Count - 1, 0f, 0f));
@@ -168,8 +171,6 @@ namespace VertexAnimater {
 			AssetDatabase.Refresh();
 			
 			GameObject go = new GameObject(selection.name);
-			//go.transform.rotation = skinnedMesh.transform.rotation;
-			//go.transform.position = skinnedMesh.transform.position;
 			go.AddComponent<MeshRenderer>().sharedMaterial = mat;
 			go.AddComponent<MeshFilter>().sharedMesh = mesh;
 			PrefabUtility.CreatePrefab(folderPath + "/" + selection.name + ".prefab", go);
