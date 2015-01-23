@@ -11,7 +11,7 @@ namespace VertexAnimater {
 		public const FilterMode ANIM_TEX_FILTER = FilterMode.Bilinear;
 
 		public const float DT = 1f / FPS;
-		public const float COLOR_DEPTH = 256f;
+		public const float COLOR_DEPTH = 255f;
 
 		public const string SHADER_ANIM_TEX = "_AnimTex";
 		public const string SHADER_SCALE = "_Scale";

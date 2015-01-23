@@ -16,6 +16,8 @@ SubShader {
 		#pragma multi_compile BILINEAR_OFF BILINEAR_ON
 		#pragma surface surf Unlit vertex:vert
 		#pragma target 5.0
+		
+		static const float COLOR_DEPTH = 255;
 
 		sampler2D _MainTex;
 		sampler2D _AnimTex;
@@ -68,7 +70,7 @@ SubShader {
 			float3 pos1 = tex2Dlod(_AnimTex, uv).rgb;
 			uv.y += 0.5;
 			float3 pos2 = tex2Dlod(_AnimTex, uv).rgb;
-			float3 pos = (pos1 + pos2 / 256.0) * _Scale.xyz + _Offset.xyz;
+			float3 pos = (pos1 + pos2 / COLOR_DEPTH) * _Scale.xyz + _Offset.xyz;
 			
 			#ifdef BILINEAR_OFF
 			v.vertex.xyz += pos;
@@ -77,7 +79,7 @@ SubShader {
 			pos1 = tex2Dlod(_AnimTex, uv).rgb;
 			uv.y += 0.5;
 			pos2 = tex2Dlod(_AnimTex, uv).rgb;
-			pos2 = (pos1 + pos2 / 256.0) * _Scale.xyz + _Offset.xyz;
+			pos2 = (pos1 + pos2 / COLOR_DEPTH) * _Scale.xyz + _Offset.xyz;
 			
 			v.vertex.xyz += lerp(pos, pos2, tFilter);
 			#endif
