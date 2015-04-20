@@ -14,10 +14,10 @@ namespace VertexAnimater {
 		public const float COLOR_DEPTH = 255f;
 
 		public const string SHADER_ANIM_TEX = "_AnimTex";
-		public const string SHADER_SCALE = "_Scale";
-		public const string SHADER_OFFSET = "_Offset";
-		public const string SHADER_ANIM_END = "_AnimEnd";
-		public const string SHADER_FPS = "_FPS";
+		public const string SHADER_SCALE = "_AnimTex_Scale";
+		public const string SHADER_OFFSET = "_AnimTex_Offset";
+		public const string SHADER_ANIM_END = "_AnimTex_AnimEnd";
+		public const string SHADER_FPS = "_AnimTex_FPS";
 
 		public const string DIR_ASSETS = "Assets";
 		public const string DIR_ROOT = "AnimationTex";
@@ -29,7 +29,7 @@ namespace VertexAnimater {
 				Debug.Log("No Active GameObject");
 				return;
 			}
-			Animation animation = selection.animation;
+			Animation animation = selection.GetComponent<Animation>();
 			if (animation == null) {
 				Debug.Log("No Animation");
 				return;
