@@ -13,6 +13,7 @@ namespace VertexAnimater {
 		public const float DT = 1f / FPS;
 		public const float COLOR_DEPTH = 255f;
 
+		public const string SHADER_NAME = "VertexAnim/OneTime";
 		public const string SHADER_ANIM_TEX = "_AnimTex";
 		public const string SHADER_SCALE = "_AnimTex_Scale";
 		public const string SHADER_OFFSET = "_AnimTex_Offset";
@@ -157,7 +158,7 @@ namespace VertexAnimater {
 			AssetDatabase.WriteImportSettingsIfDirty(pngPath);
 			AssetDatabase.ImportAsset(pngPath, ImportAssetOptions.ForceUpdate);
 
-			Material mat = new Material(Shader.Find("VertexAnim/oneshot"));
+			Material mat = new Material(Shader.Find(SHADER_NAME));
 			mat.mainTexture = skinnedMesh.sharedMaterial.mainTexture;
 			mat.SetTexture (SHADER_ANIM_TEX, (Texture2D)AssetDatabase.LoadAssetAtPath (pngPath, typeof(Texture2D)));
 			mat.SetVector (SHADER_SCALE, scale);
