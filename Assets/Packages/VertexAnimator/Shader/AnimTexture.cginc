@@ -15,12 +15,12 @@ float _AnimTex_FPS;
 half4 _AnimTex_TexelSize;
 
 
-float3 AnimTexVertexPos_Bilinear(float3 vertex, float2 texcoord1, float t) {
+float3 AnimTexVertexPos_Bilinear(float3 vertex, uint vid, float t) {
     float frame = min(t * _AnimTex_FPS, _AnimTex_AnimEnd.y);
     float frame1 = frame;
 
     float2 uv = 0;
-    uv.xy = texcoord1 + float2(0, frame1 * _AnimTex_TexelSize.y);
+    uv.xy = (0.5 + float2(vid, frame1)) * _AnimTex_TexelSize;
     float3 pos1 = tex2Dlod(_AnimTex, float4(uv, 0, 0)).rgb;
     uv.y += 0.5;
     float3 pos2 = tex2Dlod(_AnimTex, float4(uv, 0, 0)).rgb;
@@ -30,20 +30,20 @@ float3 AnimTexVertexPos_Bilinear(float3 vertex, float2 texcoord1, float t) {
 
     return vertex;
 }
-float3 AnimTexVertexPos_Point(float3 vertex, float2 texcoord1, float t) {
+float3 AnimTexVertexPos_Point(float3 vertex, uint vid, float t) {
     float frame = min(t * _AnimTex_FPS, _AnimTex_AnimEnd.y);
     float frame1 = floor(frame);
     float frame2 = min(frame1 + 1, _AnimTex_AnimEnd.y);
     float tFilter = frame - frame1;
 
     float4 uv = 0;
-    uv.xy = texcoord1 + float2(0, frame1 * _AnimTex_TexelSize.y);
+    uv.xy = (0.5 + float2(vid, frame1)) * _AnimTex_TexelSize;
     float3 pos1 = tex2Dlod(_AnimTex, uv).rgb;
     uv.y += 0.5;
     float3 pos2 = tex2Dlod(_AnimTex, uv).rgb;
     float3 pos = (pos1 + pos2 * COLOR_DEPTH_INV) * _AnimTex_Scale.xyz + _AnimTex_Offset.xyz;
     
-    uv.xy = texcoord1 + float2(0, frame2 * _AnimTex_TexelSize.y);
+    uv.xy = (0.5 + float2(vid, frame2)) * _AnimTex_TexelSize;
     pos1 = tex2Dlod(_AnimTex, uv).rgb;
     uv.y += 0.5;
     pos2 = tex2Dlod(_AnimTex, uv).rgb;
@@ -53,11 +53,11 @@ float3 AnimTexVertexPos_Point(float3 vertex, float2 texcoord1, float t) {
 
     return vertex;
 }			
-float3 AnimTexVertexPos(float3 vertex, float2 texcoord1, float t) {
+float3 AnimTexVertexPos(float3 vertex, uint vid, float t) {
 	#ifdef BILINEAR_OFF
-    return AnimTexVertexPos_Bilinear(vertex, texcoord1, t);
+    return AnimTexVertexPos_Bilinear(vertex, vid, t);
 	#else
-    return AnimTexVertexPos_Point(vertex, texcoord1, t);
+    return AnimTexVertexPos_Point(vertex, vid, t);
 	#endif
 }
 #endif

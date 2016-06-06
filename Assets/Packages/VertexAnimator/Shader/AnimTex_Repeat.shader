@@ -1,4 +1,4 @@
-Shader "VertexAnim/Repeat" {
+Shader "VertexAnim/Repeat" { 
 	Properties {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)

@@ -34,7 +34,7 @@ namespace VertexAnimater {
             var vtex = new VertexTex (sampler);
 
             var mesh = sampler.CombinedMesh;
-            mesh.uv2 = vtex.uv2;
+            //mesh.uv2 = vtex.uv2;
             mesh.bounds = vtex.Bounds ();
 			
 			var folderPath = DIR_ASSETS + "/" + DIR_ROOT;
