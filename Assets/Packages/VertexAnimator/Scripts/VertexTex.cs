@@ -15,17 +15,21 @@ namespace VertexAnimater {
         public readonly Vector2[] uv2;
         public readonly Vector4 scale;
         public readonly Vector4 offset;
-        public readonly Texture2D tex2d;
+        public readonly Texture2D positionTex;
+		public readonly Texture2D normalTex;
         public readonly float frameEnd;
         public readonly List<Vector3[]> verticesList;
+		public readonly List<Vector3[]> normalsList;
 
         Vector3[] _cacheVertices;
 
-        public VertexTex(CombinedMeshSampler sample) { 
+        public VertexTex(CombinedMeshSampler sample) {
             verticesList = new List<Vector3[]> ();
+			normalsList = new List<Vector3[]> ();
             for (float t = 0; t < (sample.Length + DT); t += DT) {
                 var combinedMesh = sample.Sample (t);
                 verticesList.Add (combinedMesh.vertices);
+				normalsList.Add (combinedMesh.normals);
             }
 
             var firstVertices = verticesList[0];
@@ -58,9 +62,14 @@ namespace VertexAnimater {
             var texHeight = LargerInPow2 (verticesList.Count * 2);
             Debug.Log (string.Format ("tex({0}x{1}), nVertices={2} nFrames={3}", texWidth, texHeight, vertexCount, verticesList.Count));
 
-            tex2d = new Texture2D (texWidth, texHeight, TextureFormat.RGB24, false, true);
-            tex2d.filterMode = ANIM_TEX_FILTER;
-            tex2d.wrapMode = TextureWrapMode.Clamp;
+            positionTex = new Texture2D (texWidth, texHeight, TextureFormat.RGB24, false, true);
+            positionTex.filterMode = ANIM_TEX_FILTER;
+            positionTex.wrapMode = TextureWrapMode.Clamp;
+
+			normalTex = new Texture2D (texWidth, texHeight, TextureFormat.RGB24, false, true);
+			normalTex.filterMode = ANIM_TEX_FILTER;
+			normalTex.wrapMode = TextureWrapMode.Clamp;
+
             uv2 = new Vector2[vertexCount];
             var texSize = new Vector2 (1f / texWidth, 1f / texHeight);
             var halfTexOffset = 0.5f * texSize;
@@ -68,31 +77,30 @@ namespace VertexAnimater {
                 uv2 [i] = new Vector2 ((float)i * texSize.x, 0f) + halfTexOffset;
             for (int y = 0; y < verticesList.Count; y++) {
                 Vector3[] vertices = verticesList [y];
+				Vector3[] normals = normalsList [y];
                 for (int x = 0; x < vertices.Length; x++) {
-                    float posX = (vertices [x].x - offset.x) / scale.x;
-                    float posY = (vertices [x].y - offset.y) / scale.y;
-                    float posZ = (vertices [x].z - offset.z) / scale.z;
+					var pos = Normalize (vertices [x], offset, scale);
+					Color c0, c1;
+					Encode (pos, out c0, out c1);
+                    positionTex.SetPixel (x, y, c0);
+					positionTex.SetPixel (x, y + (texHeight >> 1), c1);
 
-                    var c1x = Mathf.Clamp01(Mathf.Floor(posX * COLOR_DEPTH) * COLOR_DEPTH_INV);
-                    var c1y = Mathf.Clamp01(Mathf.Floor(posY * COLOR_DEPTH) * COLOR_DEPTH_INV);
-                    var c1z = Mathf.Clamp01(Mathf.Floor(posZ * COLOR_DEPTH) * COLOR_DEPTH_INV);
-                    tex2d.SetPixel (x, y, new Color(c1x, c1y, c1z, 1));
-
-                    var c2x = Mathf.Clamp01 (Mathf.Round((posX - c1x) * COLOR_DEPTH * COLOR_DEPTH) * COLOR_DEPTH_INV);
-                    var c2y = Mathf.Clamp01 (Mathf.Round((posY - c1y) * COLOR_DEPTH * COLOR_DEPTH) * COLOR_DEPTH_INV);
-                    var c2z = Mathf.Clamp01 (Mathf.Round((posZ - c1z) * COLOR_DEPTH * COLOR_DEPTH) * COLOR_DEPTH_INV);
-                    tex2d.SetPixel (x, y + (texHeight >> 1), new Color(c2x, c2y, c2z, 1));
+					var normal = 0.5f * (normals [x] + Vector3.one);
+					Encode (normal, out c0, out c1);
+					normalTex.SetPixel (x, y, c0);
+					normalTex.SetPixel (x, y + (texHeight >> 1), c1);
                 }
             }
-            tex2d.Apply ();
+            positionTex.Apply ();
+			normalTex.Apply ();
         }
 
         public Vector3 Position(int vid, float frame) {
             frame = Mathf.Clamp (frame, 0f, frameEnd);
             var uv = uv2 [vid];
-            uv.y += frame * tex2d.texelSize.y;
-            var pos1 = tex2d.GetPixelBilinear (uv.x, uv.y);
-            var pos2 = tex2d.GetPixelBilinear (uv.x, uv.y + 0.5f);
+            uv.y += frame * positionTex.texelSize.y;
+            var pos1 = positionTex.GetPixelBilinear (uv.x, uv.y);
+            var pos2 = positionTex.GetPixelBilinear (uv.x, uv.y + 0.5f);
             return new Vector3 (
                 (pos1.r + pos2.r / COLOR_DEPTH) * scale.x + offset.x,
                 (pos1.g + pos2.g / COLOR_DEPTH) * scale.y + offset.y,
@@ -106,6 +114,24 @@ namespace VertexAnimater {
             return vertices;
         }
 
+		public static Vector3 Normalize(Vector3 pos, Vector3 offset, Vector3 scale) {
+			return new Vector3 (
+				(pos.x - offset.x) / scale.x,
+				(pos.y - offset.y) / scale.y,
+				(pos.z - offset.z) / scale.z);
+		}
+		public static void Encode(float v01, out float c0, out float c1) {
+			c0 = Mathf.Clamp01(Mathf.Floor(v01 * COLOR_DEPTH) * COLOR_DEPTH_INV);
+			c1 = Mathf.Clamp01 (Mathf.Round((v01 - c0) * COLOR_DEPTH * COLOR_DEPTH) * COLOR_DEPTH_INV);
+		}
+		public static void Encode(Vector3 v01, out Color c0, out Color c1) {
+			float c0x, c0y, c0z, c1x, c1y, c1z;
+			Encode (v01.x, out c0x, out c1x);
+			Encode (v01.y, out c0y, out c1y);
+			Encode (v01.z, out c0z, out c1z);
+			c0 = new Color (c0x, c0y, c0z, 1f);
+			c1 = new Color (c1x, c1y, c1z, 1f);
+		}
         public static int LargerInPow2(int width) {
             width--;
             var digits = 0;
@@ -118,7 +144,7 @@ namespace VertexAnimater {
 
         #region IDisposable implementation
         public void Dispose () {
-            GameObject.Destroy (tex2d);
+            GameObject.Destroy (positionTex);
         }
         #endregion
     }

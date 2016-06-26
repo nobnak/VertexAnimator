@@ -46,31 +46,21 @@ namespace VertexAnimater {
 			AssetDatabase.Refresh();
 			yield return 0;
 
-			var pngPath = folderPath + "/" + selection.name + ".png";
-			File.WriteAllBytes(pngPath, vtex.tex2d.EncodeToPNG());
-			AssetDatabase.ImportAsset(pngPath, ImportAssetOptions.ForceUpdate);
-			var pngImporter = (TextureImporter) AssetImporter.GetAtPath(pngPath);
-			var pngSettings = new TextureImporterSettings();
-			pngImporter.ReadTextureSettings(pngSettings);
-			pngSettings.filterMode = ANIM_TEX_FILTER;
-			pngSettings.mipmapEnabled = false;
-			pngSettings.linearTexture = true;
-            pngSettings.maxTextureSize = Mathf.Max(vtex.tex2d.width, vtex.tex2d.height);
-			pngSettings.wrapMode = TextureWrapMode.Clamp;
-			pngSettings.textureFormat = TextureImporterFormat.RGB24;
-			pngImporter.SetTextureSettings(pngSettings);
-			AssetDatabase.WriteImportSettingsIfDirty(pngPath);
-			AssetDatabase.ImportAsset(pngPath, ImportAssetOptions.ForceUpdate);
+			var posPngPath = folderPath + "/" + selection.name + ".png";
+			var normPngPath = folderPath + "/" + selection.name + "_normal.png";
+			var posTex = Save (vtex.positionTex, posPngPath);
+			var normTex = Save (vtex.normalTex, normPngPath);
 
 			var renderer = selection.GetComponentInChildren<Renderer> ();
 			Material mat = new Material(Shader.Find(ShaderConst.SHADER_NAME));
 			if (renderer != null && renderer.sharedMaterial != null)
 				mat.mainTexture = renderer.sharedMaterial.mainTexture;
-            mat.SetTexture (ShaderConst.SHADER_ANIM_TEX, (Texture2D)AssetDatabase.LoadAssetAtPath (pngPath, typeof(Texture2D)));
+			mat.SetTexture (ShaderConst.SHADER_ANIM_TEX, posTex);
             mat.SetVector (ShaderConst.SHADER_SCALE, vtex.scale);
             mat.SetVector (ShaderConst.SHADER_OFFSET, vtex.offset);
             mat.SetVector (ShaderConst.SHADER_ANIM_END, new Vector4 (sampler.Length, vtex.verticesList.Count - 1, 0f, 0f));
             mat.SetFloat (ShaderConst.SHADER_FPS, FPS);
+			mat.SetTexture (ShaderConst.SHADER_NORM_TEX, normTex);
 
 			AssetDatabase.CreateAsset(mat, folderPath + "/" + selection.name + "Mat.mat");
 			AssetDatabase.CreateAsset(mesh, folderPath + "/" + selection.name + "Mesh.asset");
@@ -81,6 +71,24 @@ namespace VertexAnimater {
 			go.AddComponent<MeshRenderer>().sharedMaterial = mat;
 			go.AddComponent<MeshFilter>().sharedMesh = mesh;
 			PrefabUtility.CreatePrefab(folderPath + "/" + selection.name + ".prefab", go);
+		}
+
+		static Texture2D Save (Texture2D tex, string pngPath) {
+			File.WriteAllBytes (pngPath, tex.EncodeToPNG ());
+			AssetDatabase.ImportAsset (pngPath, ImportAssetOptions.ForceUpdate);
+			var pngImporter = (TextureImporter)AssetImporter.GetAtPath (pngPath);
+			var pngSettings = new TextureImporterSettings ();
+			pngImporter.ReadTextureSettings (pngSettings);
+			pngSettings.filterMode = ANIM_TEX_FILTER;
+			pngSettings.mipmapEnabled = false;
+			pngSettings.linearTexture = true;
+			pngSettings.maxTextureSize = Mathf.Max (tex.width, tex.height);
+			pngSettings.wrapMode = TextureWrapMode.Clamp;
+			pngSettings.textureFormat = TextureImporterFormat.RGB24;
+			pngImporter.SetTextureSettings (pngSettings);
+			AssetDatabase.WriteImportSettingsIfDirty (pngPath);
+			AssetDatabase.ImportAsset (pngPath, ImportAssetOptions.ForceUpdate);
+			return (Texture2D)AssetDatabase.LoadAssetAtPath (pngPath, typeof(Texture2D));
 		}
 	}
 }
