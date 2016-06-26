@@ -1,4 +1,4 @@
-Shader "VertexAnim/OneTime" {
+Shader "VertexAnim/OneTime" { 
 	Properties {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
@@ -23,9 +23,9 @@ Shader "VertexAnim/OneTime" {
             #include "AnimTexture.cginc"
 
             struct vsin {
+                uint vid: SV_VertexID;
                 float4 vertex : POSITION;
                 float2 texcoord : TEXCOORD0;
-                float2 texcoord1 : TEXCOORD1;
             };
 
             struct vs2ps {
@@ -36,14 +36,14 @@ Shader "VertexAnim/OneTime" {
             sampler2D _MainTex;
             float4 _Color;
             
-            vs2ps vert(vsin IN) {
+            vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                float3 v = AnimTexVertexPos(IN.vertex, IN.texcoord1, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
                 
                 vs2ps OUT;
-                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v, 1));
-                OUT.uv = IN.texcoord;
+                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
+                OUT.uv = v.texcoord;
                 return OUT;
             }
 
@@ -66,10 +66,10 @@ Shader "VertexAnim/OneTime" {
             #include "AnimTexture.cginc"
 
             struct vsin {
+                uint vid: SV_VertexID;
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
-                float2 texcoord1 : TEXCOORD1;
             };
 
             struct vs2ps {
@@ -82,7 +82,7 @@ Shader "VertexAnim/OneTime" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.texcoord1, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
                 
                 vs2ps OUT;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);
