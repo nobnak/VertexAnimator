@@ -26,7 +26,7 @@ namespace VertexAnimater {
 			if (!EditorApplication.isPlaying)
 				EditorApplication.isPlaying = true;
 
-			selection.AddComponent<MonoBehaviour>().StartCoroutine(CreateMaterial(selection));
+			selection.AddComponent<Dummy>().StartCoroutine(CreateMaterial(selection));
 		}
 
 		public static IEnumerator CreateMaterial(GameObject selection) {

@@ -85,7 +85,7 @@ namespace VertexAnimater {
                     positionTex.SetPixel (x, y, c0);
 					positionTex.SetPixel (x, y + (texHeight >> 1), c1);
 
-					var normal = 0.5f * (normals [x] + Vector3.one);
+                    var normal = 0.5f * (normals [x].normalized + Vector3.one);
 					Encode (normal, out c0, out c1);
 					normalTex.SetPixel (x, y, c0);
 					normalTex.SetPixel (x, y + (texHeight >> 1), c1);

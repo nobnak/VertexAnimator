@@ -10,6 +10,6 @@ namespace VertexAnimater {
         public const string SHADER_OFFSET = "_AnimTex_Offset";
         public const string SHADER_ANIM_END = "_AnimTex_AnimEnd";
         public const string SHADER_FPS = "_AnimTex_FPS";
-		public const string SHADER_NORM_TEX = "_AnimTex_NormTex";
+        public const string SHADER_NORM_TEX = "_AnimTex_NormalTex";
     }
 }
