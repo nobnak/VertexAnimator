@@ -10,11 +10,18 @@ sampler2D _AnimTex_NormalTex;
 float4 _AnimTex_Scale;
 float4 _AnimTex_Offset;
 float4 _AnimTex_AnimEnd;
-float _AnimTex_T;
 float _AnimTex_FPS;
 
 half4 _AnimTex_TexelSize;
 half4 _AnimTex_NormalTex_TexelSize;
+
+#if defined(INSTANCING_ON)
+UNITY_INSTANCING_CBUFFER_START(Props)
+UNITY_DEFINE_INSTANCED_PROP(float, _AnimTex_T)
+UNITY_INSTANCING_CBUFFER_END
+#else
+float _AnimTex_T;
+#endif
 
 
 float3 AnimTexVertexPos_Bilinear(uint vid, float t) {
@@ -52,10 +59,10 @@ float3 AnimTexVertexPos_Point(uint vid, float t) {
     return lerp(pos, pos2, tFilter);
 }			
 float3 AnimTexVertexPos(float3 vertex, uint vid, float t) {
-	#ifdef BILINEAR_OFF
-    return AnimTexVertexPos_Bilinear(vid, t);
-	#else
+	#ifdef BILINEAR_ON
     return AnimTexVertexPos_Point(vid, t);
+	#else
+    return AnimTexVertexPos_Bilinear(vid, t);
 	#endif
 }
 

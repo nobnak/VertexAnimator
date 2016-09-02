@@ -3,7 +3,7 @@ Shader "VertexAnim/Repeat" {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
 		
-		_AnimTex ("PosTex", 2D) = "white" {}
+		_AnimTex ("PosTex", 2D) = "white" {} 
 		_AnimTex_Scale ("Scale", Vector) = (1,1,1,1)
 		_AnimTex_Offset ("Offset", Vector) = (0,0,0,0)
 		_AnimTex_AnimEnd ("End (Time, Frame)", Vector) = (0, 0, 0, 0)

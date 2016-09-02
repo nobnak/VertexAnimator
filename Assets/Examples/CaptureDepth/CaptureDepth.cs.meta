@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: cc0bceb971eedc840b0996e0e48a0bc7
+timeCreated: 1460975682
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - depthView: {fileID: 2100000, guid: ba95246b84869c24891d522115bc5b4d, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
