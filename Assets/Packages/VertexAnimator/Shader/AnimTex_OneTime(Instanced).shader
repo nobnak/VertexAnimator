@@ -58,6 +58,50 @@ Shader "VertexAnim/OneTime (Instanced)" {
             }
 			ENDCG
 		}
+        Pass {
+            Name "ShadowCaster"
+            Tags { "LightMode" = "ShadowCaster" }
+
+            CGPROGRAM
+            #pragma multi_compile_shadowcaster
+            #pragma multi_compile_instancing
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+
+            struct vsin {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+                uint vid: SV_VertexID;
+                UNITY_INSTANCE_ID
+            };
+
+            struct vs2ps {
+                V2F_SHADOW_CASTER;
+            };
+            
+            sampler2D _MainTex;
+            float4 _Color;
+            
+            vs2ps vert(vsin v) {
+                UNITY_SETUP_INSTANCE_ID(v);
+
+                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T);
+                t = clamp(t, 0, _AnimTex_AnimEnd.x);
+                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
+                
+                vs2ps OUT;
+                TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);
+                return OUT;
+            }
+
+            float4 frag(vs2ps IN) : COLOR {
+                SHADOW_CASTER_FRAGMENT(IN);
+            }
+            ENDCG
+        }
 	}
 	FallBack Off
 }

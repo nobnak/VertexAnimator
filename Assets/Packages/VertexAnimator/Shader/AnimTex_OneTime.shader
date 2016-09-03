@@ -16,11 +16,9 @@ Shader "VertexAnim/OneTime" {
 		
 		Pass {
 			CGPROGRAM
-            #pragma target 5.0
-            #pragma multi_compile BILINEAR_OFF BILINEAR_ON
             #pragma vertex vert
             #pragma fragment frag
-            #include "AnimTexture.cginc"
+            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;
@@ -57,13 +55,11 @@ Shader "VertexAnim/OneTime" {
             Tags { "LightMode" = "ShadowCaster" }
 
             CGPROGRAM
-            #pragma target 5.0
-            #pragma multi_compile BILINEAR_OFF BILINEAR_ON
             #pragma multi_compile_shadowcaster
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "AnimTexture.cginc"
+            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;

@@ -20,7 +20,6 @@
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows addshadow vertex:vert
         #pragma multi_compile_instancing
-		#pragma target 5.0
         #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
 
 		sampler2D _MainTex;
@@ -66,5 +65,5 @@
 		}
 		ENDCG
 	}
-	FallBack "Diffuse"
+	FallBack Off
 }
