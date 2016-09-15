@@ -51,7 +51,7 @@
         void vert(inout appdata v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex.xyz, v.vid, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 v.normal = normalize(AnimTexNormal(v.vid, t));
         }
 		void surf (Input IN, inout SurfaceOutputStandard o) {

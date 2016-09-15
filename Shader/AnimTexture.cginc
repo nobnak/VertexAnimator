@@ -16,7 +16,7 @@ half4 _AnimTex_TexelSize;
 half4 _AnimTex_NormalTex_TexelSize;
 
 #if defined(INSTANCING_ON)
-UNITY_INSTANCING_CBUFFER_START(Props)
+UNITY_INSTANCING_CBUFFER_START(MyProps)
 UNITY_DEFINE_INSTANCED_PROP(float, _AnimTex_T)
 UNITY_INSTANCING_CBUFFER_END
 #else
@@ -58,7 +58,7 @@ float3 AnimTexVertexPos_Point(uint vid, float t) {
     
     return lerp(pos, pos2, tFilter);
 }			
-float3 AnimTexVertexPos(float3 vertex, uint vid, float t) {
+float3 AnimTexVertexPos(uint vid, float t) {
 	#ifdef BILINEAR_ON
     return AnimTexVertexPos_Point(vid, t);
 	#else

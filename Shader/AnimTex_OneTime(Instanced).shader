@@ -7,12 +7,12 @@ Shader "VertexAnim/OneTime (Instanced)" {
 		_AnimTex_Scale ("Scale", Vector) = (1,1,1,1)
 		_AnimTex_Offset ("Offset", Vector) = (0,0,0,0)
 		_AnimTex_AnimEnd ("End (Time, Frame)", Vector) = (0, 0, 0, 0)
-		_AnimTex_T ("Time", float) = 0
+		//_AnimTex_T ("Time", float) = 0
 		_AnimTex_FPS ("Frame per Sec(FPS)", Float) = 30
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
-		LOD 700 Cull Off
+		Cull Off
 		
 		Pass {
 			CGPROGRAM
@@ -45,9 +45,8 @@ Shader "VertexAnim/OneTime (Instanced)" {
 
                 float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T);
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
-                
-                OUT.vertex = UnityObjectToClipPos(v.vertex);
+                float3 pos = AnimTexVertexPos(v.vid, t);
+                OUT.vertex = UnityObjectToClipPos(pos);
                 OUT.uv = v.texcoord;
                 return OUT;
             }
@@ -90,7 +89,7 @@ Shader "VertexAnim/OneTime (Instanced)" {
 
                 float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T);
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t); 
                 
                 vs2ps OUT;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);

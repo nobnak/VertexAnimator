@@ -41,7 +41,7 @@ Shader "VertexAnim/VisNormal" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 float3 n = AnimTexNormal(v.vid, t);
                 n = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, n));
                 
@@ -87,7 +87,7 @@ Shader "VertexAnim/VisNormal" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 
                 vs2ps OUT;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);
