@@ -23,7 +23,7 @@ namespace VertexAnimater {
 
         Vector3[] _cacheVertices;
 
-        public VertexTex(CombinedMeshSampler sample) {
+        public VertexTex(IMeshSampler sample) {
             verticesList = new List<Vector3[]> ();
 			normalsList = new List<Vector3[]> ();
             for (float t = 0; t < (sample.Length + DT); t += DT) {

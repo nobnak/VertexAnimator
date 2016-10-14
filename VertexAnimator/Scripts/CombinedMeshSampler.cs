@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 
 namespace VertexAnimater {
-    public class CombinedMeshSampler : System.IDisposable {
-        public readonly GameObject Target;
-        public readonly Mesh CombinedMesh;
-        public readonly float Length = 0f;
+    public class CombinedMeshSampler : IMeshSampler {
+        public GameObject Target { get; private set; }
+        public Mesh Output { get; private set; }
+        public float Length { get; private set; }
 
         Mesh[] _meshes;
         SkinnedMeshRenderer[] _skines;
@@ -13,7 +13,7 @@ namespace VertexAnimater {
         AnimationState[] _state;
 
         public CombinedMeshSampler(GameObject target) {
-            CombinedMesh = new Mesh();
+            Output = new Mesh();
 
             _skines = target.GetComponentsInChildren<SkinnedMeshRenderer> ();
             _meshes = new Mesh[_skines.Length];
@@ -37,7 +37,7 @@ namespace VertexAnimater {
                     Object.Destroy (_meshes [i]);
                 _meshes = null;
             }
-            Object.Destroy (CombinedMesh);
+            Object.Destroy (Output);
         }
 
         public Mesh Sample(float time) {
@@ -58,8 +58,8 @@ namespace VertexAnimater {
                 combines [i] = combine;
             }
 
-            CombinedMesh.CombineMeshes (combines);
-            return CombinedMesh;
+            Output.CombineMeshes (combines);
+            return Output;
         }
     }
 }

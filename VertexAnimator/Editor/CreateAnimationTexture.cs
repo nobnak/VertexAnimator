@@ -30,12 +30,8 @@ namespace VertexAnimater {
 		}
 
 		public static IEnumerator CreateMaterial(GameObject selection) {
-            var sampler = new CombinedMeshSampler (selection);
+            var sampler = new SingleMeshSampler (selection);
             var vtex = new VertexTex (sampler);
-
-            var mesh = sampler.CombinedMesh;
-            mesh.bounds = vtex.Bounds ();
-            mesh.Optimize ();
 			
 			var folderPath = DIR_ASSETS + "/" + DIR_ROOT;
 			if (!Directory.Exists(folderPath))
@@ -63,9 +59,11 @@ namespace VertexAnimater {
 			mat.SetTexture (ShaderConst.SHADER_NORM_TEX, normTex);
 
 			AssetDatabase.CreateAsset(mat, folderPath + "/" + selection.name + "Mat.mat");
-			AssetDatabase.CreateAsset(mesh, folderPath + "/" + selection.name + "Mesh.asset");
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
+
+            var smr = selection.GetComponentInChildren<SkinnedMeshRenderer> ();
+            var mesh = (smr != null ? smr.sharedMesh : null);
 			
 			GameObject go = new GameObject(selection.name);
 			go.AddComponent<MeshRenderer>().sharedMaterial = mat;
