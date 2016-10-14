@@ -37,7 +37,7 @@ Shader "VertexAnim/OneTime" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 
                 vs2ps OUT;
                 OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
@@ -78,7 +78,7 @@ Shader "VertexAnim/OneTime" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.vid, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 
                 vs2ps OUT;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);

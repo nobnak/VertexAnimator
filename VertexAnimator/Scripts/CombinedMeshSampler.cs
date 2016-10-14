@@ -14,7 +14,6 @@ namespace VertexAnimater {
 
         public CombinedMeshSampler(GameObject target) {
             CombinedMesh = new Mesh();
-            CombinedMesh.MarkDynamic ();
 
             _skines = target.GetComponentsInChildren<SkinnedMeshRenderer> ();
             _meshes = new Mesh[_skines.Length];

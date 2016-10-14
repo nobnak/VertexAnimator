@@ -39,7 +39,7 @@ Shader "VertexAnim/Repeat" {
 			vs2ps vert(vsin IN) {
 				float t = _AnimTex_T;
 				t = clamp(t % _AnimTex_AnimEnd.x, 0, _AnimTex_AnimEnd.x);
-				float3 v = AnimTexVertexPos(IN.vertex, IN.texcoord1, t);
+				float3 v = AnimTexVertexPos(IN.texcoord1, t);
 				
 				vs2ps OUT;
 				OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v, 1));
@@ -82,7 +82,7 @@ Shader "VertexAnim/Repeat" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t % _AnimTex_AnimEnd.x, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.vertex, v.texcoord1, t);
+                v.vertex.xyz = AnimTexVertexPos(v.texcoord1, t);
                 
                 vs2ps OUT;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);
