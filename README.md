@@ -1,5 +1,11 @@
 # Vertex Texture Generator for Unity
 
+## Usage
+
+```git submodule add git@github.com:nobnak/VertexAnimator.git Assets/Packages/VertexAnimator```
+
+## Features
+
 - Supports:
   - GPU Instancing
   - Vertex (Normal) Lighting
