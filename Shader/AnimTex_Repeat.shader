@@ -16,17 +16,15 @@ Shader "VertexAnim/Repeat" {
 		
 		Pass {
 			CGPROGRAM
-			#pragma target 5.0
-			#pragma multi_compile BILINEAR_OFF BILINEAR_ON
 			#pragma vertex vert
 			#pragma fragment frag
-			#include "AnimTexture.cginc"
+            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
 
-			struct vsin {
-				float4 vertex : POSITION;
-				float2 texcoord : TEXCOORD0;
-				float2 texcoord1 : TEXCOORD1;
-			};
+            struct vsin {
+                uint vid: SV_VertexID;
+                float4 vertex : POSITION;
+                float2 texcoord : TEXCOORD0;
+            };
 
 			struct vs2ps {
 				float4 vertex : POSITION;
@@ -36,15 +34,15 @@ Shader "VertexAnim/Repeat" {
 			sampler2D _MainTex;
             float4 _Color;
 			
-			vs2ps vert(vsin IN) {
+			vs2ps vert(vsin v) {
 				float t = _AnimTex_T;
 				t = clamp(t % _AnimTex_AnimEnd.x, 0, _AnimTex_AnimEnd.x);
-				float3 v = AnimTexVertexPos(IN.texcoord1, t);
-				
-				vs2ps OUT;
-				OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v, 1));
-				OUT.uv = IN.texcoord;
-				return OUT;
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
+                
+                vs2ps OUT;
+                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
+                OUT.uv = v.texcoord;
+                return OUT;
 			}
 
 			float4 frag(vs2ps IN) : COLOR {
@@ -57,19 +55,17 @@ Shader "VertexAnim/Repeat" {
             Tags { "LightMode" = "ShadowCaster" }
 
             CGPROGRAM
-            #pragma target 5.0
-            #pragma multi_compile BILINEAR_OFF BILINEAR_ON
             #pragma multi_compile_shadowcaster
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "AnimTexture.cginc"
+            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
 
             struct vsin {
+                uint vid: SV_VertexID;
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
-                float2 texcoord1 : TEXCOORD1;
             };
 
             struct vs2ps {
@@ -82,7 +78,7 @@ Shader "VertexAnim/Repeat" {
             vs2ps vert(vsin v) {
                 float t = _AnimTex_T;
                 t = clamp(t % _AnimTex_AnimEnd.x, 0, _AnimTex_AnimEnd.x);
-                v.vertex.xyz = AnimTexVertexPos(v.texcoord1, t);
+                v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 
                 vs2ps OUT;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(OUT);
