@@ -3,7 +3,7 @@
 ## Usage
 
 ```
-git submodule add git@github.com:nobnak/VertexAnimator.git Assets/Packages/VertexAnimator
+git submodule add https://github.com/nobnak/VertexAnimator.git Assets/Packages/VertexAnimator
 git checkout Stable
 ```
 
