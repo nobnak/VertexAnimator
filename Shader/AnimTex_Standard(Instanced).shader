@@ -20,7 +20,7 @@
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows addshadow vertex:vert
         #pragma multi_compile_instancing
-        #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+        #include "AnimTexture.cginc"
 
 		sampler2D _MainTex;
 

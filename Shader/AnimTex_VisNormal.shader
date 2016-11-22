@@ -21,7 +21,7 @@ Shader "VertexAnim/VisNormal" {
             #pragma multi_compile BILINEAR_OFF BILINEAR_ON
             #pragma vertex vert
             #pragma fragment frag
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;

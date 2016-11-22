@@ -20,7 +20,7 @@ Shader "VertexAnim/OneTime (Instanced)" {
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 float4 vertex : POSITION;
@@ -67,7 +67,7 @@ Shader "VertexAnim/OneTime (Instanced)" {
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 float4 vertex : POSITION;

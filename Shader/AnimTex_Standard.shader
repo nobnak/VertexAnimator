@@ -20,7 +20,7 @@
 		CGPROGRAM
 		#pragma surface surf Standard addshadow vertex:vert
 		#pragma target 5.0
-        #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+        #include "AnimTexture.cginc"
 
 		sampler2D _MainTex;
 

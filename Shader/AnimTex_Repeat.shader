@@ -18,7 +18,7 @@ Shader "VertexAnim/Repeat" {
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;
@@ -59,7 +59,7 @@ Shader "VertexAnim/Repeat" {
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;

@@ -18,7 +18,7 @@ Shader "VertexAnim/OneTime" {
 			CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;
@@ -38,7 +38,7 @@ Shader "VertexAnim/OneTime" {
                 float t = _AnimTex_T;
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
                 v.vertex.xyz = AnimTexVertexPos(v.vid, t);
-                
+
                 vs2ps OUT;
                 OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
                 OUT.uv = v.texcoord;
@@ -59,7 +59,7 @@ Shader "VertexAnim/OneTime" {
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "Assets/Packages/VertexAnimator/Shader/AnimTexture.cginc"
+            #include "AnimTexture.cginc"
 
             struct vsin {
                 uint vid: SV_VertexID;
