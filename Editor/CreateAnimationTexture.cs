@@ -79,11 +79,13 @@ namespace VertexAnimater {
 			pngImporter.ReadTextureSettings (pngSettings);
 			pngSettings.filterMode = ANIM_TEX_FILTER;
 			pngSettings.mipmapEnabled = false;
-			pngSettings.linearTexture = true;
-			pngSettings.maxTextureSize = Mathf.Max (tex.width, tex.height);
+			pngSettings.sRGBTexture = false;
 			pngSettings.wrapMode = TextureWrapMode.Clamp;
-			pngSettings.textureFormat = TextureImporterFormat.RGB24;
 			pngImporter.SetTextureSettings (pngSettings);
+			var platformSettings = pngImporter.GetDefaultPlatformTextureSettings ();
+			platformSettings.format = TextureImporterFormat.RGB24;
+			platformSettings.maxTextureSize = Mathf.Max (platformSettings.maxTextureSize, Mathf.Max (tex.width, tex.height));
+			pngImporter.SetPlatformTextureSettings (platformSettings);
 			AssetDatabase.WriteImportSettingsIfDirty (pngPath);
 			AssetDatabase.ImportAsset (pngPath, ImportAssetOptions.ForceUpdate);
 			return (Texture2D)AssetDatabase.LoadAssetAtPath (pngPath, typeof(Texture2D));

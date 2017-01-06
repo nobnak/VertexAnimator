@@ -1,4 +1,6 @@
-﻿Shader "Custom/AnimTex_Standard (Instanced)" {
+﻿// Upgrade NOTE: replaced 'UNITY_INSTANCE_ID' with 'UNITY_VERTEX_INPUT_INSTANCE_ID'
+
+Shader "Custom/AnimTex_Standard (Instanced)" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -37,7 +39,7 @@
             half4 texcoord5 : TEXCOORD5;
         #endif
             fixed4 color : COLOR;
-            UNITY_INSTANCE_ID
+            UNITY_VERTEX_INPUT_INSTANCE_ID
             uint vid : SV_VertexID;
         };
 		struct Input {

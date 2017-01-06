@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'UNITY_INSTANCE_ID' with 'UNITY_VERTEX_INPUT_INSTANCE_ID'
+
 Shader "VertexAnim/OneTime (Instanced)" { 
 	Properties {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
@@ -26,13 +28,13 @@ Shader "VertexAnim/OneTime (Instanced)" {
                 float4 vertex : POSITION;
                 float2 texcoord : TEXCOORD0;
                 uint vid: SV_VertexID;
-                UNITY_INSTANCE_ID
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct vs2ps {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
-                UNITY_INSTANCE_ID
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
             
             sampler2D _MainTex;
@@ -74,7 +76,7 @@ Shader "VertexAnim/OneTime (Instanced)" {
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
                 uint vid: SV_VertexID;
-                UNITY_INSTANCE_ID
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct vs2ps {
