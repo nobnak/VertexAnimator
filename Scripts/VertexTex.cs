@@ -27,8 +27,15 @@ namespace VertexAnimater {
             verticesList = new List<Vector3[]> ();
 			normalsList = new List<Vector3[]> ();
             for (float t = 0; t < (sample.Length + DT); t += DT) {
-                var combinedMesh = sample.Sample (t);
-                verticesList.Add (combinedMesh.vertices);
+                Matrix4x4 mpos, mnorm;
+                var combinedMesh = sample.Sample (t, out mpos, out mnorm);
+                var vertices = combinedMesh.vertices;
+                var normals = combinedMesh.normals;
+                for (var i = 0; i < vertices.Length; i++) {
+                    vertices [i] = mpos.MultiplyPoint3x4 (vertices [i]);
+                    normals [i] = mnorm.MultiplyVector (normals [i]);
+                }
+                verticesList.Add (vertices);
 				normalsList.Add (combinedMesh.normals);
             }
 

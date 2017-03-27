@@ -40,7 +40,7 @@ namespace VertexAnimater {
             Object.Destroy (Output);
         }
 
-        public Mesh Sample(float time) {
+        public Mesh Sample(float time, out Matrix4x4 mpos, out Matrix4x4 mnorm) {
             time = Mathf.Clamp (time, 0f, Length);
             for (var i = 0; i < _animations.Length; i++) {
                 _state [i].time = time;
@@ -59,6 +59,7 @@ namespace VertexAnimater {
             }
 
             Output.CombineMeshes (combines);
+            mpos = mnorm = Matrix4x4.identity;
             return Output;
         }
     }

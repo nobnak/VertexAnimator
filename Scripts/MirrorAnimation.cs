@@ -21,7 +21,8 @@ namespace VertexAnimater {
                 _sampler.Dispose ();
         }
         void Update() {
-            _filter.sharedMesh = _sampler.Sample (time);
+            Matrix4x4 mpos, mnorm;
+            _filter.sharedMesh = _sampler.Sample (time, out mpos, out mnorm);
         }
     }
 }

@@ -27,11 +27,13 @@ namespace VertexAnimater {
             Object.Destroy (Output);
         }
 
-        public Mesh Sample(float time) {
+        public Mesh Sample(float time, out Matrix4x4 mpos, out Matrix4x4 mnorm) {
             time = Mathf.Clamp (time, 0f, Length);
             _state.time = time;
             _animation.Sample ();
             _skin.BakeMesh (Output);
+            mpos = _skin.localToWorldMatrix;
+            mnorm = _skin.worldToLocalMatrix.transpose;
             return Output;
         }
     }
@@ -40,7 +42,6 @@ namespace VertexAnimater {
         GameObject Target { get; }
         Mesh Output { get; }
         float Length { get; }
-
-         Mesh Sample (float time);
+        Mesh Sample (float time, out Matrix4x4 mpos, out Matrix4x4 mnorm);
     }
 }
