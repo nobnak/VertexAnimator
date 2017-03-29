@@ -152,6 +152,7 @@ namespace VertexAnimater {
         #region IDisposable implementation
         public void Dispose () {
             GameObject.Destroy (positionTex);
+            GameObject.Destroy (normalTex);
         }
         #endregion
     }
