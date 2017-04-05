@@ -21,6 +21,7 @@ Shader "VertexAnim/VisNormal" {
             #pragma multi_compile BILINEAR_OFF BILINEAR_ON
             #pragma vertex vert
             #pragma fragment frag
+            #include "UnityCG.cginc"
             #include "AnimTexture.cginc"
 
             struct vsin {
@@ -46,7 +47,7 @@ Shader "VertexAnim/VisNormal" {
                 n = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, n));
                 
                 vs2ps OUT;
-                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
+                OUT.vertex = UnityObjectToClipPos(float4(v.vertex.xyz, 1));
                 OUT.uv = v.texcoord;
                 OUT.normal = n;
                 return OUT;

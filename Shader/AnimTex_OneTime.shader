@@ -18,6 +18,7 @@ Shader "VertexAnim/OneTime" {
 			CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #include "UnityCG.cginc"
             #include "AnimTexture.cginc"
 
             struct vsin {
@@ -40,7 +41,7 @@ Shader "VertexAnim/OneTime" {
                 v.vertex.xyz = AnimTexVertexPos(v.vid, t);
 
                 vs2ps OUT;
-                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
+                OUT.vertex = UnityObjectToClipPos(float4(v.vertex.xyz, 1));
                 OUT.uv = v.texcoord;
                 return OUT;
             }
