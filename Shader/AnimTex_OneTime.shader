@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "VertexAnim/OneTime" { 
 	Properties {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
