@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "VertexAnim/VisNormal" { 
 	Properties {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
@@ -46,7 +48,7 @@ Shader "VertexAnim/VisNormal" {
                 n = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, n));
                 
                 vs2ps OUT;
-                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
+                OUT.vertex = UnityObjectToClipPos(float4(v.vertex.xyz, 1));
                 OUT.uv = v.texcoord;
                 OUT.normal = n;
                 return OUT;

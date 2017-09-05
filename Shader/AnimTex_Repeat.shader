@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "VertexAnim/Repeat" { 
 	Properties {
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
@@ -40,7 +42,7 @@ Shader "VertexAnim/Repeat" {
                 v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 
                 vs2ps OUT;
-                OUT.vertex = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz, 1));
+                OUT.vertex = UnityObjectToClipPos(float4(v.vertex.xyz, 1));
                 OUT.uv = v.texcoord;
                 return OUT;
 			}
