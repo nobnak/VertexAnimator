@@ -45,7 +45,7 @@ Shader "VertexAnim/OneTime (Instanced)" {
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_TRANSFER_INSTANCE_ID(v, OUT);
 
-                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T);
+                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T_arr, _AnimTex_T);
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
                 float3 pos = AnimTexVertexPos(v.vid, t);
                 OUT.vertex = UnityObjectToClipPos(pos);
@@ -89,7 +89,7 @@ Shader "VertexAnim/OneTime (Instanced)" {
             vs2ps vert(vsin v) {
                 UNITY_SETUP_INSTANCE_ID(v);
 
-                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T);
+                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T_arr, _AnimTex_T);
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
                 v.vertex.xyz = AnimTexVertexPos(v.vid, t); 
                 
