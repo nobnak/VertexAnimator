@@ -109,6 +109,7 @@ namespace VertexAnimater {
             var platformSettings = pngImporter.GetDefaultPlatformTextureSettings ();
             platformSettings.format = TextureImporterFormat.RGB24;
             platformSettings.maxTextureSize = Mathf.Max (platformSettings.maxTextureSize, Mathf.Max (tex.width, tex.height));
+            platformSettings.textureCompression = TextureImporterCompression.Uncompressed;
             pngImporter.SetPlatformTextureSettings (platformSettings);
             AssetDatabase.WriteImportSettingsIfDirty (pngPath);
             AssetDatabase.ImportAsset (pngPath, ImportAssetOptions.ForceUpdate);
