@@ -51,7 +51,7 @@ Shader "Custom/AnimTex_Standard (Instanced)" {
 		fixed4 _Color;
 
         void vert(inout appdata v) {
-                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T);
+                float t = UNITY_ACCESS_INSTANCED_PROP(_AnimTex_T_arr, _AnimTex_T);
                 t = clamp(t, 0, _AnimTex_AnimEnd.x);
                 v.vertex.xyz = AnimTexVertexPos(v.vid, t);
                 v.normal = normalize(AnimTexNormal(v.vid, t));
