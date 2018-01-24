@@ -19,82 +19,141 @@ namespace VertexAnimater {
 		public const string DIR_ASSETS = "Assets";
 		public const string DIR_ROOT = "AnimationTex";
 
-        [MenuItem("Custom/Create/VertexAnimation (Reuse Mesh)")]
+        [MenuItem("VertexAnimation/Prefab/Reuse Mesh")]
 		public static void CreateVertexTexture() {
             CreateVertexTexture (CreationModeFlags.NONE);
         }
-        [MenuItem("Custom/Create/VeretxAnimation")]
+        [MenuItem("VertexAnimation/Prefab/Old")]
         public static void CreateVertexTextureWithNewMesh() {
             CreateVertexTexture (CreationModeFlags.NEW_MESH);
         }
-        [MenuItem("Custom/Create/VeretxAnimation (Combined)")]
+        [MenuItem("VertexAnimation/Prefab/Combined")]
         public static void CreateVertexTextureWithCombinedMesh() {
             CreateVertexTexture (CreationModeFlags.NEW_MESH | CreationModeFlags.COMBINED_MESH);
         }
-        public static void CreateVertexTexture(CreationModeFlags flags) {
-			GameObject selection = Selection.activeGameObject;
-			if (selection == null) {
-				Debug.Log("No Active GameObject");
-				return;
-			}
-			if (!EditorApplication.isPlaying)
-				EditorApplication.isPlaying = true;
+        [MenuItem("VertexAnimation/Material/Reuse Mesh")]
+        public static void CreateMaterial() {
+            CreateMaterial(CreationModeFlags.NONE);
+        }
 
-            selection.AddComponent<Dummy>().StartCoroutine(CreateVertexTexture(selection, flags));
-		}
+        public static void CreateVertexTexture(CreationModeFlags flags) {
+            GameObject selection;
+            if (!TryGetActiveGameObject(out selection))
+                return;
+            AssureEditorApplicationIsPlaying();
+            StartCoroutine(selection, CreateVertexTexture(selection, flags));
+        }
+        public static void CreateMaterial(CreationModeFlags flags) {
+            GameObject selection;
+            if (!TryGetActiveGameObject(out selection))
+                return;
+            AssureEditorApplicationIsPlaying();
+            StartCoroutine(selection, CreateMaterial(selection, flags));
+        }
+
+        public static IEnumerator CreateMaterial(GameObject selection, CreationModeFlags flags) {
+            var sampler = ContainsAllFlags(flags, CreationModeFlags.COMBINED_MESH)
+                ? (IMeshSampler)new CombinedMeshSampler(selection) : (IMeshSampler)new SingleMeshSampler(selection);
+            var vtex = new VertexTex(sampler);
+
+            var folderPath = AssureExistAndGetRootFolder();
+            folderPath = CreateTargetFolder(selection, folderPath);
+            yield return 0;
+            
+            Material mat = CreateMaterial(sampler, vtex);
+            SaveAsset(mat, folderPath + "/" + selection.name + ".mat");
+        }
 
         public static IEnumerator CreateVertexTexture(GameObject selection, CreationModeFlags flags) {
             var sampler = ContainsAllFlags(flags, CreationModeFlags.COMBINED_MESH)
-                ? (IMeshSampler)new CombinedMeshSampler(selection) : (IMeshSampler)new SingleMeshSampler (selection);
-            var vtex = new VertexTex (sampler);
-		
-            var folderPath = DIR_ASSETS + "/" + DIR_ROOT;
-            if (!Directory.Exists (folderPath))
-                AssetDatabase.CreateFolder (DIR_ASSETS, DIR_ROOT);
-            var guid = AssetDatabase.CreateFolder (folderPath, selection.name);
-            folderPath = AssetDatabase.GUIDToAssetPath (guid);
-            AssetDatabase.SaveAssets ();
-            AssetDatabase.Refresh ();
+                ? (IMeshSampler)new CombinedMeshSampler(selection) : (IMeshSampler)new SingleMeshSampler(selection);
+            var vtex = new VertexTex(sampler);
+
+            var folderPath = AssureExistAndGetRootFolder();
+            folderPath = CreateTargetFolder(selection, folderPath);
             yield return 0;
 
             var posPngPath = folderPath + "/" + selection.name + ".png";
             var normPngPath = folderPath + "/" + selection.name + "_normal.png";
-            var posTex = Save (vtex.positionTex, posPngPath);
-            var normTex = Save (vtex.normalTex, normPngPath);
+            var posTex = Save(vtex.positionTex, posPngPath);
+            var normTex = Save(vtex.normalTex, normPngPath);
 
-            var renderer = selection.GetComponentInChildren<Renderer> ();
-            Material mat = new Material (Shader.Find (ShaderConst.SHADER_NAME));
-            if (renderer != null && renderer.sharedMaterial != null)
-                mat.mainTexture = renderer.sharedMaterial.mainTexture;
-            mat.SetTexture (ShaderConst.SHADER_ANIM_TEX, posTex);
-            mat.SetVector (ShaderConst.SHADER_SCALE, vtex.scale);
-            mat.SetVector (ShaderConst.SHADER_OFFSET, vtex.offset);
-            mat.SetVector (ShaderConst.SHADER_ANIM_END, new Vector4 (sampler.Length, vtex.verticesList.Count - 1, 0f, 0f));
-            mat.SetFloat (ShaderConst.SHADER_FPS, FPS);
-            mat.SetTexture (ShaderConst.SHADER_NORM_TEX, normTex);
+            var renderer = selection.GetComponentInChildren<Renderer>();
+            Material mat = CreateMaterial(sampler, vtex, posTex, normTex, renderer);
+            SaveAsset(mat, folderPath + "/" + selection.name + ".mat");
 
-            AssetDatabase.CreateAsset (mat, folderPath + "/" + selection.name + "Mat.mat");
-            AssetDatabase.SaveAssets ();
-            AssetDatabase.Refresh ();
-
-            var smr = selection.GetComponentInChildren<SkinnedMeshRenderer> ();
+            var smr = selection.GetComponentInChildren<SkinnedMeshRenderer>();
             var mesh = (smr != null ? smr.sharedMesh : null);
 
             if (ContainsAllFlags(flags, CreationModeFlags.NEW_MESH)) {
                 mesh = sampler.Output;
-                mesh.bounds = vtex.Bounds ();
-                AssetDatabase.CreateAsset (mesh, folderPath + "/" + selection.name + ".asset");
-                AssetDatabase.SaveAssets ();
-                AssetDatabase.Refresh ();
+                mesh.bounds = vtex.Bounds();
+                SaveAsset(mesh, folderPath + "/" + selection.name + ".asset");
             }
 
-            GameObject go = new GameObject (selection.name);
-            go.AddComponent<MeshRenderer> ().sharedMaterial = mat;
-            go.AddComponent<MeshFilter> ().sharedMesh = mesh;
-            PrefabUtility.CreatePrefab (folderPath + "/" + selection.name + ".prefab", go);
-		}
+            GameObject go = new GameObject(selection.name);
+            go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
+            PrefabUtility.CreatePrefab(folderPath + "/" + selection.name + ".prefab", go);
+        }
 
-		static Texture2D Save (Texture2D tex, string pngPath) {
+        private static bool TryGetActiveGameObject(out GameObject selection) {
+            selection = Selection.activeGameObject;
+            if (selection != null)
+                return true;
+
+            Debug.Log("No Active GameObject");
+            return false;
+        }
+        private static void AssureEditorApplicationIsPlaying() {
+            if (!EditorApplication.isPlaying)
+                EditorApplication.isPlaying = true;
+        }
+        private static void StartCoroutine(GameObject go, IEnumerator coroutine) {
+            go.AddComponent<Dummy>().StartCoroutine(coroutine);
+        }
+
+        private static void SaveAsset(Object obj, string path) {
+            AssetDatabase.CreateAsset(obj, path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        private static string CreateTargetFolder(GameObject selection, string folderPath) {
+            var guid = AssetDatabase.CreateFolder(folderPath, selection.name);
+            folderPath = AssetDatabase.GUIDToAssetPath(guid);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            return folderPath;
+        }
+        private static string AssureExistAndGetRootFolder() {
+            var folderPath = DIR_ASSETS + "/" + DIR_ROOT;
+            if (!Directory.Exists(folderPath)) {
+                AssetDatabase.CreateFolder(DIR_ASSETS, DIR_ROOT);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+            return folderPath;
+        }
+
+        private static Material CreateMaterial(IMeshSampler sampler, VertexTex vtex, 
+            Texture2D posTex = null, Texture2D normTex = null, Renderer renderer = null) {
+
+            Material mat = new Material(Shader.Find(ShaderConst.SHADER_NAME));
+            if (renderer != null && renderer.sharedMaterial != null)
+                mat.mainTexture = renderer.sharedMaterial.mainTexture;
+            if (posTex != null)
+                mat.SetTexture(ShaderConst.SHADER_ANIM_TEX, posTex);
+            mat.SetVector(ShaderConst.SHADER_SCALE, vtex.scale);
+            mat.SetVector(ShaderConst.SHADER_OFFSET, vtex.offset);
+            mat.SetVector(ShaderConst.SHADER_ANIM_END, new Vector4(sampler.Length, vtex.verticesList.Count - 1, 0f, 0f));
+            mat.SetFloat(ShaderConst.SHADER_FPS, FPS);
+            if (normTex != null)
+                mat.SetTexture(ShaderConst.SHADER_NORM_TEX, normTex);
+            return mat;
+        }
+
+        static Texture2D Save (Texture2D tex, string pngPath) {
             #if UNITY_5_5_OR_NEWER
             File.WriteAllBytes (pngPath, tex.EncodeToPNG ());
             AssetDatabase.ImportAsset (pngPath, ImportAssetOptions.ForceUpdate);
