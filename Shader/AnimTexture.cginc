@@ -1,3 +1,5 @@
+// Upgrade NOTE: upgraded instancing buffer 'MyProps' to new syntax.
+
 #ifndef ANIM_TEXTURE_INCLUDE
 #define ANIM_TEXTURE_INCLUDE
 
