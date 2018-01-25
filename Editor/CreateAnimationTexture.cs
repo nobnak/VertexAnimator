@@ -40,14 +40,13 @@ namespace VertexAnimater {
             GameObject selection;
             if (!TryGetActiveGameObject(out selection))
                 return;
-            AssureEditorApplicationIsPlaying();
+            //AssureEditorApplicationIsPlaying();
             StartCoroutine(selection, CreateVertexTexture(selection, flags));
         }
         public static void CreateMaterial(CreationModeFlags flags) {
             GameObject selection;
             if (!TryGetActiveGameObject(out selection))
                 return;
-            AssureEditorApplicationIsPlaying();
             StartCoroutine(selection, CreateMaterial(selection, flags));
         }
 
