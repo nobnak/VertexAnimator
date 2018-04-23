@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using nobnak.Gist.ObjectExt;
+using nobnak.Gist.Extensions.Texture2DExt;
 
 namespace VertexAnimater {
 
@@ -69,11 +71,11 @@ namespace VertexAnimater {
             var texHeight = LargerInPow2 (verticesList.Count * 2);
             Debug.Log (string.Format ("tex({0}x{1}), nVertices={2} nFrames={3}", texWidth, texHeight, vertexCount, verticesList.Count));
 
-            positionTex = new Texture2D (texWidth, texHeight, TextureFormat.RGB24, false, true);
+			positionTex = positionTex.Create(texWidth, texHeight, TextureFormat.RGB24, false, true);
             positionTex.filterMode = ANIM_TEX_FILTER;
             positionTex.wrapMode = TextureWrapMode.Clamp;
 
-			normalTex = new Texture2D (texWidth, texHeight, TextureFormat.RGB24, false, true);
+			normalTex = normalTex.Create(texWidth, texHeight, TextureFormat.RGB24, false, true);
 			normalTex.filterMode = ANIM_TEX_FILTER;
 			normalTex.wrapMode = TextureWrapMode.Clamp;
 
@@ -151,8 +153,8 @@ namespace VertexAnimater {
 
         #region IDisposable implementation
         public void Dispose () {
-            GameObject.Destroy (positionTex);
-            GameObject.Destroy (normalTex);
+			positionTex.Destroy ();
+			normalTex.Destroy ();
         }
         #endregion
     }
