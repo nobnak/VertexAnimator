@@ -3,8 +3,8 @@
 ## Usage
 
 ```
+git submodule add https://github.com/nobnak/Gist.git Assets/Packages/Gist
 git submodule add https://github.com/nobnak/VertexAnimator.git Assets/Packages/VertexAnimator
-git checkout Stable
 ```
 
 ## Features
