@@ -93,7 +93,7 @@ namespace VertexAnimater {
             GameObject go = new GameObject(selection.name);
             go.AddComponent<MeshRenderer>().sharedMaterial = mat;
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
-            PrefabUtility.CreatePrefab(folderPath + "/" + selection.name + ".prefab", go);
+            PrefabUtility.SaveAsPrefabAsset(go, folderPath + "/" + selection.name + ".prefab");
         }
 
         private static bool TryGetActiveGameObject(out GameObject selection) {
