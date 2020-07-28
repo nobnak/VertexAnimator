@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -119,10 +119,11 @@ namespace VertexAnimater {
         }
 
         private static string CreateTargetFolder(GameObject selection, string folderPath) {
+			Debug.Log($"CreateTargetFolder at {folderPath}");
             var guid = AssetDatabase.CreateFolder(folderPath, selection.name);
             folderPath = AssetDatabase.GUIDToAssetPath(guid);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
             return folderPath;
         }
         private static string AssureExistAndGetRootFolder() {
