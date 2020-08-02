@@ -38,7 +38,7 @@ namespace VertexAnimater {
                     normals [i] = mnorm.MultiplyVector (normals [i]);
                 }
                 verticesList.Add (vertices);
-				normalsList.Add (combinedMesh.normals);
+                normalsList.Add (normals);
             }
 
             var firstVertices = verticesList[0];
